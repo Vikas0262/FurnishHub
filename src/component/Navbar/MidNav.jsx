@@ -47,7 +47,7 @@ function MidNav() {
             </Link>{" "}
             | &nbsp;
             <Link
-              to="/signup"
+              to="/register"
               className="link transition text-[15px] font-[500]"
             >
               Signup
