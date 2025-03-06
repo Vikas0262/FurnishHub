@@ -20,7 +20,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 function MidNav() {
   return (
-    <div className="container flex">
+    <div className="container flex mid-navbar ">
       <div className="col1 w-[20%] flex items-center text-[2rem] font-semibold">
         Furnish<span className="font-bold text-red-600">Hub</span>
       </div>

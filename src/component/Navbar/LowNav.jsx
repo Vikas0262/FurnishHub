@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 function LowNav() {
   return (
-    <div className="py-2 mb-3 mt-3 border-t border-b border-gray-300">
+    <div className="py-2 mt-3 mb-3 border-t border-gray-300 bg-red sticky-nav">
       <div className="container flex items-center justify-end ">
         <div className="col1 w-[25%] ">
           <Button className="!text-black gap-3 w-[85%]">

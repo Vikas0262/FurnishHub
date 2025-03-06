@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
+// import Header from "../component/Header/Header.jsx"
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -9,15 +10,16 @@ const Login = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-96">
+      {/* <Header/> */}
+      <div className="p-8 bg-white rounded-lg shadow-lg w-96">
         {/* Title */}
-        <h2 className="text-2xl font-semibold text-center mb-2">
+        <h2 className="mb-2 text-2xl font-semibold text-center">
           Login to your account
         </h2>
 
         {/* Email Input */}
         <div className="mb-4">
-          <label className="block text-gray-700 mb-1">Email Id</label>
+          <label className="block mb-1 text-gray-700">Email Id</label>
           <input
             type="email"
             placeholder="Enter your email"
@@ -26,8 +28,8 @@ const Login = () => {
         </div>
 
         {/* Password Input */}
-        <div className="mb-4 relative">
-          <label className="block text-gray-700 mb-1">Password</label>
+        <div className="relative mb-4">
+          <label className="block mb-1 text-gray-700">Password</label>
           <input
             type={passwordVisible ? "text" : "password"}
             placeholder="Enter your password"
@@ -35,7 +37,7 @@ const Login = () => {
           />
           {/* Toggle Password Visibility */}
           <span
-            className="absolute right-3 top-10 text-gray-600 cursor-pointer"
+            className="absolute text-gray-600 cursor-pointer right-3 top-10"
             onClick={() => setPasswordVisible(!passwordVisible)}
           >
             {passwordVisible ? <FaEyeSlash /> : <FaEye />}
@@ -43,17 +45,17 @@ const Login = () => {
         </div>
 
         {/* Forgot Password */}
-        <div className="text-sm text-gray-600 mb-4">
+        <div className="mb-4 text-sm text-gray-600">
           <Link to='/forget' className="hover:text-red-500">Forgot Password?</Link>
         </div>
 
         {/* Login Button */}
-        <button className="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-bold transition">
+        <button className="w-full py-2 font-bold text-white transition bg-red-500 rounded-lg hover:bg-red-600">
           LOGIN
         </button>
 
         {/* Sign Up Link */}
-        <p className="text-center text-gray-600 mt-4">
+        <p className="mt-4 text-center text-gray-600">
           Not Registered? <a href="#" className="text-red-500 hover:underline" onClick={navigate("/register")}>Sign Up</a>
         </p>
 
@@ -65,8 +67,8 @@ const Login = () => {
         </div>
 
         {/* Google Login Button */}
-        <button className="w-full flex items-center justify-center border py-2 rounded-lg hover:bg-gray-200 transition">
-          <FcGoogle className="text-2xl mr-2" />
+        <button className="flex items-center justify-center w-full py-2 transition border rounded-lg hover:bg-gray-200">
+          <FcGoogle className="mr-2 text-2xl" />
           LOGIN WITH GOOGLE
         </button>
       </div>

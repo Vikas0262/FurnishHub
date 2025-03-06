@@ -10,8 +10,12 @@
 }
 
 body{
-  font-family: "Montserrat Alternates", sans-serif;
+  font-family: "Lato", sans-serif;
   font-optical-sizing: auto;
+}
+
+.top-navbar, .mid-navbar{
+  font-family: "Montserrat Alternates", sans-serif;
 }
 
 .container{
