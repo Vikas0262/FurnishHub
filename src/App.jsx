@@ -9,6 +9,7 @@ import Home from "./Pages/Home.jsx";
 import Login from "./Pages/Login/Login.jsx";
 import Forget from "./Pages/Forget/Forget.jsx";
 import Register from "./Pages/Register/Register";
+import Product from "./Pages/Product/Product.jsx";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/login" exact={true} element={<Login />} />
         <Route path="/forget" exact={true} element={<Forget />} />
         <Route path="/register" exact={true} element={<Register />} />
+        <Route path="/product" exact={true} element={<Product />} />
       </Routes>
     </BrowserRouter>
   );

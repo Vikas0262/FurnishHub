@@ -8,6 +8,7 @@ import Badge from "@mui/material/Badge"; // ✅ Correct import
 import { styled } from "@mui/material/styles"; // ✅ Correct import
 import { FaRegHeart } from "react-icons/fa";
 import Tooltip from "@mui/material/Tooltip";
+import { RiMenu3Line, RiCloseLine } from "react-icons/ri";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -18,13 +19,22 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-function MidNav() {
+function MidNav({ setIsMobileMenuOpen, isMobileMenuOpen }) {
   return (
-    <div className="container flex mid-navbar ">
-      <div className="col1 w-[20%] flex items-center text-[2rem] font-semibold">
-        Furnish<span className="font-bold text-red-600">Hub</span>
+    <div className="container flex flex-wrap items-center justify-between mid-navbar py-4">
+      <div className="col1 w-full sm:w-[20%] flex items-center justify-between">
+        <div className="text-[2rem] font-semibold">
+          Furnish<span className="font-bold text-red-600">Hub</span>
+        </div>
+        <button 
+          className="sm:hidden text-2xl"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? <RiCloseLine /> : <RiMenu3Line />}
+        </button>
       </div>
-      <div className="col2 w-[50%]">
+      
+      <div className="col2 w-full sm:w-[50%] mt-4 sm:mt-0">
         <div className="search-box w-[100%] h-[50px] bg-[#e5e5e5] rounded-[5px] relative p-2 flex items-center justify-center">
           <input
             type="text"
@@ -36,7 +46,8 @@ function MidNav() {
           </button>
         </div>
       </div>
-      <div className="col3 w-[30%] flex items-center">
+
+      <div className="col3 w-full sm:w-[30%] mt-4 sm:mt-0">
         <ul className="flex items-center justify-end w-full gap-3">
           <li>
             <Link
@@ -53,7 +64,7 @@ function MidNav() {
               Signup
             </Link>
           </li>
-          <li className="" >
+          <li>
             <Tooltip title="Cart">
               <IconButton aria-label="cart">
                 <StyledBadge badgeContent={4} color="secondary">
@@ -62,13 +73,13 @@ function MidNav() {
               </IconButton>
             </Tooltip>
           </li>
-          <li className="">
-          <Tooltip title="Wish">
-            <IconButton aria-label="cart">
-              <StyledBadge badgeContent={4} color="secondary">
-                <FaRegHeart />
-              </StyledBadge>
-            </IconButton>
+          <li>
+            <Tooltip title="Wish">
+              <IconButton aria-label="cart">
+                <StyledBadge badgeContent={4} color="secondary">
+                  <FaRegHeart />
+                </StyledBadge>
+              </IconButton>
             </Tooltip>
           </li>
         </ul>
