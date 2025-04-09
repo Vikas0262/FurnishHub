@@ -1,32 +1,67 @@
-import React from 'react';
-import Header from "../component/Header/Header.jsx";
+import React, { Suspense, lazy } from 'react';
+// import Header from "../component/Header/Header.jsx";
 import Hero from "../component/Hero/Hero.jsx";
 import FeaturedCategories from "../component/FeaturedCategories/FeaturedCategories.jsx";
-import TrendingProducts from "../component/TrendingProducts/TrendingProducts.jsx";
-import CustomizeFurniture from "../component/CustomizeFurniture/CustomizeFurniture.jsx";
-import ShopByRoom from "../component/ShopByRoom/ShopByRoom.jsx";
-import WhyChooseUs from "../component/WhyChooseUs/WhyChooseUs.jsx";
-import CustomerReviews from "../component/CustomerReviews/CustomerReviews.jsx";
-import InstagramGallery from "../component/InstagramGallery/InstagramGallery.jsx";
-import Newsletter from "../component/Newsletter/Newsletter.jsx";
-import Footer from "../component/Footer/Footer.jsx";
+
+// Lazy load components that are not immediately visible
+const TrendingProducts = lazy(() => import("../component/TrendingProducts/TrendingProducts.jsx"));
+const CustomizeFurniture = lazy(() => import("../component/CustomizeFurniture/CustomizeFurniture.jsx"));
+const ShopByRoom = lazy(() => import("../component/ShopByRoom/ShopByRoom.jsx"));
+const WhyChooseUs = lazy(() => import("../component/WhyChooseUs/WhyChooseUs.jsx"));
+const CustomerReviews = lazy(() => import("../component/CustomerReviews/CustomerReviews.jsx"));
+const InstagramGallery = lazy(() => import("../component/InstagramGallery/InstagramGallery.jsx"));
+const Newsletter = lazy(() => import("../component/Newsletter/Newsletter.jsx"));
+const Footer = lazy(() => import("../component/Footer/Footer.jsx"));
+
+// Loading fallback component
+const LoadingSpinner = () => (
+  <div className="flex justify-center items-center py-8">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+  </div>
+);
 
 function Home() {
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      {/* Critical components loaded immediately */}
+      {/* <Header /> */}
       <main>
         <Hero />
         <FeaturedCategories />
-        <TrendingProducts />
-        <CustomizeFurniture />
-        <ShopByRoom />
-        <WhyChooseUs />
-        <CustomerReviews />
-        <InstagramGallery />
-        <Newsletter />
+        
+        {/* Lazy loaded components wrapped in Suspense */}
+        <Suspense fallback={<LoadingSpinner />}>
+          <TrendingProducts />
+        </Suspense>
+
+        <Suspense fallback={<LoadingSpinner />}>
+          <CustomizeFurniture />
+        </Suspense>
+
+        <Suspense fallback={<LoadingSpinner />}>
+          <ShopByRoom />
+        </Suspense>
+
+        <Suspense fallback={<LoadingSpinner />}>
+          {/* <WhyChooseUs /> */}
+        </Suspense>
+
+        <Suspense fallback={<LoadingSpinner />}>
+          <CustomerReviews />
+        </Suspense>
+
+        <Suspense fallback={<LoadingSpinner />}>
+          <InstagramGallery />
+        </Suspense>
+
+        <Suspense fallback={<LoadingSpinner />}>
+          <Newsletter />
+        </Suspense>
       </main>
-      <Footer />
+
+      <Suspense fallback={<LoadingSpinner />}>
+        <Footer />
+      </Suspense>
     </div>
   );
 }

@@ -21,7 +21,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 function MidNav({ setIsMobileMenuOpen, isMobileMenuOpen }) {
   return (
-    <div className="container flex flex-wrap items-center justify-between mid-navbar py-4">
+    <div className="container flex flex-wrap items-center justify-between mid-navbar ">
       <div className="col1 w-full sm:w-[20%] flex items-center justify-between">
         <div className="text-[2rem] font-semibold">
           Furnish<span className="font-bold text-red-600">Hub</span>

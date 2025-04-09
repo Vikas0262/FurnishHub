@@ -28,21 +28,21 @@ const categories = [
     icon: FaChair,
     name: 'Office',
     description: 'Professional office furniture',
-    image: 'https://images.unsplash.com/photo-1505693314120-0d443867891c?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1595846265893-f433f6cca81d?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     color: 'bg-green-100'
   },
   {
     icon: FaLightbulb,
     name: 'Lighting',
     description: 'Modern lighting solutions',
-    image: 'https://images.unsplash.com/photo-1505693314120-0d443867891c?ixlib=rb-4.0.3',
+    image: 'https://plus.unsplash.com/premium_photo-1688125414593-391cf90f3103?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     color: 'bg-yellow-100'
   },
   {
     icon: FaHome,
     name: 'Decor',
     description: 'Beautiful home accessories',
-    image: 'https://images.unsplash.com/photo-1505693314120-0d443867891c?ixlib=rb-4.0.3',
+    image: 'https://plus.unsplash.com/premium_photo-1680286977134-f88bd1f926ca?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     color: 'bg-orange-100'
   }
 ];
@@ -78,31 +78,34 @@ const FeaturedCategories = () => {
               whileHover={{ y: -5 }}
               className="group cursor-pointer"
             >
-              <div className={`relative overflow-hidden rounded-2xl ${category.color} p-6 transition-all duration-300 h-[300px]`}>
+              <div className="relative overflow-hidden rounded-2xl h-[300px]">
                 {/* Background Image with Overlay */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute inset-0">
                   <img 
                     src={category.image} 
                     alt={category.name}
                     className="w-full h-full object-cover"
+                    loading={index <= 2 ? "eager" : "lazy"}
+                    decoding="async"
+                    fetchPriority={index <= 2 ? "high" : "low"}
                   />
                   <div className="absolute inset-0 bg-black/40" />
                 </div>
 
                 {/* Content */}
-                <div className="relative z-10 h-full flex flex-col justify-between">
+                <div className="relative z-10 h-full flex flex-col justify-between p-6">
                   <div>
-                    <category.icon className="text-4xl mb-4 text-gray-800 group-hover:text-white transition-colors" />
-                    <h3 className="text-2xl font-bold mb-2 text-gray-900 group-hover:text-white transition-colors">
+                    <category.icon className="text-4xl mb-4 text-white" />
+                    <h3 className="text-2xl font-bold mb-2 text-white">
                       {category.name}
                     </h3>
-                    <p className="text-gray-600 group-hover:text-gray-200 transition-colors">
+                    <p className="text-gray-200">
                       {category.description}
                     </p>
                   </div>
                   
-                  <button className="self-start mt-4 px-6 py-2 bg-white/90 text-gray-900 rounded-full font-medium 
-                    group-hover:bg-white transition-all duration-300 flex items-center gap-2">
+                  <button className="self-start mt-4 px-6 py-2 bg-white text-gray-900 rounded-full font-medium 
+                    hover:bg-gray-100 transition-all duration-300 flex items-center gap-2">
                     Explore More
                     <motion.span
                       className="inline-block"

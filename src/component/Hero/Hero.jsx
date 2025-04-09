@@ -6,19 +6,19 @@ import { useAnimation } from 'framer-motion';
 
 const heroSlides = [
   {
-    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1687180497716-5872969e5125?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     title: 'Modern Living Room Collection',
     subtitle: 'Discover comfort and style',
     accent: 'NEW ARRIVAL'
   },
   {
-    image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1608661090231-880eef793f5e?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     title: 'Scandinavian Bedroom',
     subtitle: 'Minimalist design for peaceful rest',
     accent: 'TRENDING'
   },
   {
-    image: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1680503146454-0fe569cef4eb?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     title: 'Luxury Dining Sets',
     subtitle: 'Elegance for your dining space',
     accent: 'POPULAR'
