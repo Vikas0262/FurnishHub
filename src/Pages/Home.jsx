@@ -1,5 +1,4 @@
 import React, { Suspense, lazy } from 'react';
-// import Header from "../component/Header/Header.jsx";
 import Hero from "../component/Hero/Hero.jsx";
 import FeaturedCategories from "../component/FeaturedCategories/FeaturedCategories.jsx";
 
@@ -24,7 +23,6 @@ function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Critical components loaded immediately */}
-      {/* <Header /> */}
       <main>
         <Hero />
         <FeaturedCategories />
