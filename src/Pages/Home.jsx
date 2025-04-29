@@ -10,7 +10,6 @@ const WhyChooseUs = lazy(() => import("../component/WhyChooseUs/WhyChooseUs.jsx"
 const CustomerReviews = lazy(() => import("../component/CustomerReviews/CustomerReviews.jsx"));
 const InstagramGallery = lazy(() => import("../component/InstagramGallery/InstagramGallery.jsx"));
 const Newsletter = lazy(() => import("../component/Newsletter/Newsletter.jsx"));
-const Footer = lazy(() => import("../component/Footer/Footer.jsx"));
 
 // Loading fallback component
 const LoadingSpinner = () => (
@@ -56,10 +55,6 @@ function Home() {
           <Newsletter />
         </Suspense>
       </main>
-
-      <Suspense fallback={<LoadingSpinner />}>
-        <Footer />
-      </Suspense>
     </div>
   );
 }
