@@ -1,15 +1,15 @@
 import React, { Suspense, lazy } from 'react';
-import Hero from "../component/Hero/Hero.jsx";
-import FeaturedCategories from "../component/FeaturedCategories/FeaturedCategories.jsx";
+import Hero from "../component/Hero.jsx";
+import FeaturedCategories from "../component/FeaturedCategories.jsx";
 
 // Lazy load components that are not immediately visible
-const TrendingProducts = lazy(() => import("../component/TrendingProducts/TrendingProducts.jsx"));
-const CustomizeFurniture = lazy(() => import("../component/CustomizeFurniture/CustomizeFurniture.jsx"));
-const ShopByRoom = lazy(() => import("../component/ShopByRoom/ShopByRoom.jsx"));
-const WhyChooseUs = lazy(() => import("../component/WhyChooseUs/WhyChooseUs.jsx"));
-const CustomerReviews = lazy(() => import("../component/CustomerReviews/CustomerReviews.jsx"));
-const InstagramGallery = lazy(() => import("../component/InstagramGallery/InstagramGallery.jsx"));
-const Newsletter = lazy(() => import("../component/Newsletter/Newsletter.jsx"));
+const TrendingProducts = lazy(() => import("../component/TrendingProducts.jsx"));
+const CustomizeFurniture = lazy(() => import("../component/CustomizeFurniture.jsx"));
+const ShopByRoom = lazy(() => import("../component/ShopByRoom.jsx"));
+const WhyChooseUs = lazy(() => import("../component/WhyChooseUs.jsx"));
+const CustomerReviews = lazy(() => import("../component/CustomerReviews.jsx"));
+const InstagramGallery = lazy(() => import("../component/InstagramGallery.jsx"));
+const Newsletter = lazy(() => import("../component/Newsletter.jsx"));
 
 // Loading fallback component
 const LoadingSpinner = () => (

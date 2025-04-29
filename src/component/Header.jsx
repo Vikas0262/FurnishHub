@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import TopNav from "../Navbar/TopNav.jsx";
-import MidNav from "../Navbar/MidNav.jsx";
-import LowNav from "../Navbar/LowNav.jsx";
+import TopNav from "./Navbar/TopNav.jsx";
+import MidNav from "./Navbar/MidNav.jsx";
+import LowNav from "./Navbar/LowNav.jsx";
 
 function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

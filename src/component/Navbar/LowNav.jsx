@@ -20,8 +20,9 @@ function LowNav() {
             <div className="col2 w-full sm:w-[75%]">
               <ul className="flex flex-col sm:flex-row gap-4 sm:gap-5">
                 <li><Link to="/" className="font-semibold block py-2 sm:py-0 hover:text-red-500 transition-colors">Home</Link></li>
-                <li><Link to="/" className="font-semibold block py-2 sm:py-0 hover:text-red-500 transition-colors">New Arrivals</Link></li>
                 <li><Link to="/products" className="font-semibold block py-2 sm:py-0 hover:text-red-500 transition-colors">Products</Link></li>
+                <li><Link to="/trending" className="font-semibold block py-2 sm:py-0 hover:text-red-500 transition-colors">Trending</Link></li>
+                <li><Link to="/contact" className="font-semibold block py-2 sm:py-0 hover:text-red-500 transition-colors">Contact</Link></li>
                 <li><Link to="/furniture" className="font-semibold block py-2 sm:py-0 hover:text-red-500 transition-colors">Furniture</Link></li>
                 <li><Link to="/" className="font-semibold block py-2 sm:py-0 hover:text-red-500 transition-colors">More</Link></li>
               </ul>

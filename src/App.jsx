@@ -1,7 +1,7 @@
 import "./App.css";
 import { BrowserRouter as Router, useLocation } from "react-router-dom";
-import Header from "./component/Header/Header.jsx";
-import Footer from './component/Footer/Footer.jsx';
+import Header from "./component/Header.jsx";
+import Footer from './component/Footer.jsx';
 import { AppRoutes, HIDE_HEADER_PATHS } from './routes';
 
 function AppContent() {
