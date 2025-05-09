@@ -9,6 +9,7 @@ function LowNav() {
   const location = useLocation();
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showMoreDropdown, setShowMoreDropdown] = useState(false);
 
   const handleTrendingClick = (e) => {
     e.preventDefault();
@@ -31,6 +32,15 @@ function LowNav() {
       }
     }
   };
+
+  const moreMenuItems = [
+    { name: 'About Us', path: '/about' },
+    { name: 'Blog', path: '/blog' },
+    { name: 'Careers', path: '/careers' },
+    { name: 'Terms & Conditions', path: '/terms' },
+    { name: 'Privacy Policy', path: '/privacy' },
+    { name: 'FAQ', path: '/faq' }
+  ];
 
   return (
     <div className="py-2 mt-3 border-t border-gray-300 bg-white sticky-nav">
@@ -65,8 +75,32 @@ function LowNav() {
                   </a>
                 </li>
                 <li><Link to="/contact" className="font-semibold block py-2 sm:py-0 hover:text-red-500 transition-colors">Contact</Link></li>
-                <li><Link to="/furniture" className="font-semibold block py-2 sm:py-0 hover:text-red-500 transition-colors">Furniture</Link></li>
-                <li><Link to="/" className="font-semibold block py-2 sm:py-0 hover:text-red-500 transition-colors">More</Link></li>
+                {/* <li><Link to="/furniture" className="font-semibold block py-2 sm:py-0 hover:text-red-500 transition-colors">Furniture</Link></li> */}
+                <li className="relative">
+                  <div
+                    onMouseEnter={() => setShowMoreDropdown(true)}
+                    onMouseLeave={() => setShowMoreDropdown(false)}
+                    className="cursor-pointer"
+                  >
+                    <span className="font-semibold block py-2 sm:py-0 hover:text-red-500 transition-colors flex items-center gap-1">
+                      More
+                      {/* <FaAngleDown className="text-sm" /> */}
+                    </span>
+                    {showMoreDropdown && (
+                      <div className="absolute left-0 top-full mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-50 animate-fadeIn">
+                        {moreMenuItems.map((item, index) => (
+                          <Link
+                            key={index}
+                            to={item.path}
+                            className="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-500 transition-colors"
+                          >
+                            {item.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </li>
               </ul>
             </div>
           </div>
