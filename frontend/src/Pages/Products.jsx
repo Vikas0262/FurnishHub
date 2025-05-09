@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { products } from './productData'; // Import products from a separate file
+import { products } from './product/productData'; // Updated import path
 
 const Products = () => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const Products = () => {
               animate={{ opacity: 1, y: 0 }}
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
-              onClick={() => navigate(`/products/${product.id}`)}
+              onClick={() => navigate(`/product-detail/${product.name.toLowerCase().replace(/\s+/g, '-')}`)}
               className="bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:shadow-xl"
             >
               <div className="aspect-w-1 aspect-h-1 bg-gray-200">

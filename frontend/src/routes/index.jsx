@@ -6,7 +6,6 @@ import Register from "../Pages/Auth/Register/Register.jsx";
 import Products from "../Pages/Products.jsx";
 import AdminLogin from "../Pages/Admin/AdminLogin.jsx";
 import AdminDashboard from "../Pages/Admin/AdminDashboard.jsx";
-import ProductDetail from '../Pages/Admin/ProductDetail';
 import Contact from '../Pages/Contact';
 // import Cart from '../Pages/Cart';
 import Payment from '../Pages/Payment';
@@ -23,7 +22,6 @@ export const HIDE_HEADER_PATHS = [
 const publicRoutes = [
   { path: '/', element: <Home /> },
   { path: '/products', element: <Products /> },
-  { path: '/products/:id', element: <ProductDetail /> },
   { path: '/contact', element: <Contact /> },
   // { path: '/cart', element: <Cart /> },
   { path: '/payment', element: <Payment /> }

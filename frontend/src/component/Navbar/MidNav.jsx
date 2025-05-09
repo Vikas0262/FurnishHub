@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import "./style.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import Badge from "@mui/material/Badge"; // ✅ Correct import
@@ -20,6 +20,24 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 function MidNav({ setIsMobileMenuOpen, isMobileMenuOpen }) {
+  const navigate = useNavigate();
+  const [cartItemCount, setCartItemCount] = useState(0);
+
+  useEffect(() => {
+    // Update cart count whenever localStorage changes
+    const updateCartCount = () => {
+      const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+      setCartItemCount(cartItems.length);
+    };
+
+    // Initial count
+    updateCartCount();
+
+    // Listen for storage changes
+    window.addEventListener('storage', updateCartCount);
+    return () => window.removeEventListener('storage', updateCartCount);
+  }, []);
+
   return (
     <div className="container flex flex-wrap items-center justify-between mid-navbar ">
       <div className="col1 w-full sm:w-[20%] flex items-center justify-between">
@@ -66,9 +84,13 @@ function MidNav({ setIsMobileMenuOpen, isMobileMenuOpen }) {
           </li>
           <li>
             <Tooltip title="Cart">
-              <IconButton aria-label="cart">
-                <StyledBadge badgeContent={4} color="secondary">
-                  <MdOutlineShoppingCart />
+              <IconButton 
+                aria-label="cart"
+                onClick={() => navigate('/cart')}
+                className="cursor-pointer"
+              >
+                <StyledBadge badgeContent={cartItemCount} color="secondary">
+                  <MdOutlineShoppingCart className="text-2xl" />
                 </StyledBadge>
               </IconButton>
             </Tooltip>
