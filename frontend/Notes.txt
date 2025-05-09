@@ -108,5 +108,4 @@ src/
 10. Add more social features
  
 
-
- // BACKEND DATA
+Axios ek JavaScript library hai jo HTTP requests bhejne ke liye use hoti hai. Ye mainly frontend aur backend ke beech data exchange ke liye use hoti hai. Axios ko hum browser (frontend) ya Node.js (backend) dono me use kar sakte hain.

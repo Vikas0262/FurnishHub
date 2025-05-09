@@ -8,7 +8,7 @@ import AdminLogin from "../Pages/Admin/AdminLogin.jsx";
 import AdminDashboard from "../Pages/Admin/AdminDashboard.jsx";
 import ProductDetail from '../Pages/Admin/ProductDetail';
 import Contact from '../Pages/Contact';
-import Cart from '../Pages/Cart';
+// import Cart from '../Pages/Cart';
 import Payment from '../Pages/Payment';
 
 // List of paths where header should be hidden
@@ -25,7 +25,7 @@ const publicRoutes = [
   { path: '/products', element: <Products /> },
   { path: '/products/:id', element: <ProductDetail /> },
   { path: '/contact', element: <Contact /> },
-  { path: '/cart', element: <Cart /> },
+  // { path: '/cart', element: <Cart /> },
   { path: '/payment', element: <Payment /> }
 ];
 

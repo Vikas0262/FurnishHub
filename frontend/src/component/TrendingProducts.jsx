@@ -21,7 +21,7 @@ const products = [
     id: 2,
     name: 'Minimalist Coffee Table',
     price: '$399',
-    image: 'https://images.unsplash.com/photo-1532372320978-9d483c8b5b66?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1571422065917-030a0f0e6350?q=80&w=1375&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     rating: 4.5,
     reviews: 89,
     discount: '20% OFF'

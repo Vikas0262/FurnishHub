@@ -1,15 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { products } from './productData'; // Import products from a separate file
 
 const Products = () => {
   const navigate = useNavigate();
-  const products = [
-    { id: 1, name: 'Syltherine', price: 2500000, image: 'https://via.placeholder.com/300x300?text=Syltherine', category: 'Sofa' },
-    { id: 2, name: 'Leviosa', price: 2500000, image: 'https://via.placeholder.com/300x300?text=Leviosa', category: 'Chair' },
-    { id: 3, name: 'Lolito', price: 7000000, image: 'https://via.placeholder.com/300x300?text=Lolito', category: 'Sofa' },
-    { id: 4, name: 'Respira', price: 500000, image: 'https://via.placeholder.com/300x300?text=Respira', category: 'Table' },
-  ];
 
   return (
     <main className="pt-8">
@@ -34,7 +29,7 @@ const Products = () => {
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-48 object-cover"
                   loading="lazy"
                 />
               </div>
@@ -45,15 +40,6 @@ const Products = () => {
                   <span className="text-2xl font-bold text-gray-900">
                     ${product.price.toLocaleString()}
                   </span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      // Add to cart functionality here
-                    }}
-                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                  >
-                    Add to Cart
-                  </button>
                 </div>
               </div>
             </motion.div>
