@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { products } from './productData';
+import { products } from './productData.js';
 
 const Products = () => {
   const navigate = useNavigate();
