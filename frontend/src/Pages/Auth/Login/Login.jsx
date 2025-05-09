@@ -11,7 +11,7 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -24,6 +24,7 @@ const Login = () => {
         setError(data.message || 'Login failed');
       }
     } catch (err) {
+      console.log("network error message ", err)
       setError('Network error');
     }
   };

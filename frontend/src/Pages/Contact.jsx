@@ -29,7 +29,7 @@ const Contact = () => {
     setError('');
     
     try {
-      const response = await axios.post('http://localhost:5000/api/contact', formData);
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}api/auth/contact`, formData);
       
       if (response.data.success) {
         setSubmitSuccess(true);
