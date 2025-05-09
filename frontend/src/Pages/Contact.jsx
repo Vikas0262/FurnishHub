@@ -26,6 +26,7 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    console.log("hii")
     setError('');
     
     try {
