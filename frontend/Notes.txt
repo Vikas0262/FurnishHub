@@ -1,0 +1,111 @@
+# FurnishHub - Project Documentation
+
+## Project Overview
+FurnishHub is a modern furniture e-commerce platform built with React and various modern web technologies. The project focuses on providing an immersive 3D experience for furniture visualization and a seamless shopping experience.
+
+## Tech Stack
+- Frontend Framework: React 19
+- Build Tool: Vite 6.2.0
+- Styling: 
+  - Tailwind CSS 3.4.17
+  - Styled Components 6.1.15
+  - Material UI 6.4.6
+- 3D Visualization: 
+  - Three.js 0.175.0
+  - React Three Fiber 9.1.1
+  - React Three Drei 10.0.5
+- Routing: React Router DOM 7.4.1
+- Animation: Framer Motion 12.6.3
+- Icons: 
+  - Lucide React 0.484.0
+  - React Icons 5.5.0
+- Lazy Loading: React Lazy Load Image Component 1.6.3
+- Intersection Observer: React Intersection Observer 9.16.0
+- Carousel/Slider: Swiper 11.2.5
+
+## Project Structure
+```
+src/
+├── assets/         # Static assets like images, 3D models
+├── component/      # Reusable React components
+├── Pages/          # Page components
+├── App.jsx         # Main application component
+├── main.jsx        # Application entry point
+└── index.css       # Global styles
+```
+
+## Key Features
+1. 3D Furniture Visualization
+   - Interactive 3D models using Three.js
+   - Real-time rendering with React Three Fiber
+   - Custom camera controls and lighting
+
+2. Modern UI/UX
+   - Responsive design with Tailwind CSS
+   - Smooth animations using Framer Motion
+   - Material UI components for consistent design
+   - Lazy loading for better performance
+
+3. Navigation & Routing
+   - Client-side routing with React Router
+   - Dynamic page loading
+   - Smooth transitions between pages
+
+4. Performance Optimizations
+   - Code splitting
+   - Lazy loading of images and components
+   - Intersection Observer for scroll-based animations
+   - Optimized 3D model loading
+
+## Development Setup
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Start development server:
+   ```bash
+   npm run dev
+   ```
+
+3. Build for production:
+   ```bash
+   npm run build
+   ```
+
+## Best Practices Implemented
+1. Component-based architecture
+2. Responsive design principles
+3. Performance optimization techniques
+4. Modern JavaScript/React patterns
+5. Clean code structure
+6. Proper state management
+7. Error handling
+8. Loading states and fallbacks
+
+## Interview Talking Points
+1. Experience with 3D web development using Three.js
+2. Performance optimization techniques
+3. Modern React patterns and best practices
+4. State management and data flow
+5. Responsive design implementation
+6. Animation and interaction design
+7. Code organization and architecture
+8. Build and deployment process
+9. Cross-browser compatibility
+10. Accessibility considerations
+
+## Future Improvements
+1. Implement backend integration
+2. Add user authentication
+3. Implement shopping cart functionality
+4. Add more interactive 3D features
+5. Implement AR/VR capabilities
+6. Add more customization options
+7. Implement analytics
+8. Add more payment gateways
+9. Implement search functionality
+10. Add more social features
+ 
+
+Axios ek JavaScript library hai jo HTTP requests bhejne ke liye use hoti hai. Ye mainly frontend aur backend ke beech data exchange ke liye use hoti hai. Axios ko hum browser (frontend) ya Node.js (backend) dono me use kar sakte hain.
