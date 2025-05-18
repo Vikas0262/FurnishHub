@@ -11,6 +11,7 @@ import Contact from '../Pages/Contact';
 import Cart from '../Pages/Cart';
 import Payment from '../Pages/Payment';
 import OrderConfirmation from '../Pages/OrderConfirmation';
+import Profile from '../Pages/Profile/Profile';
 import ProtectedRoute from '../component/ProtectedRoute.jsx';
 
 // List of paths where header should be hidden
@@ -19,7 +20,8 @@ export const HIDE_HEADER_PATHS = [
   '/register',
   '/forget',
   '/admin',
-  '/order-confirmation'
+  '/order-confirmation',
+  '/profile'
 ];
 
 // Public routes that don't require authentication
@@ -30,7 +32,8 @@ const publicRoutes = [
   { path: '/contact', element: <ProtectedRoute><Contact /></ProtectedRoute> },
   { path: '/cart', element: <ProtectedRoute><Cart /></ProtectedRoute> },
   { path: '/payment', element: <ProtectedRoute><Payment /></ProtectedRoute> },
-  { path: '/order-confirmation', element: <ProtectedRoute><OrderConfirmation /></ProtectedRoute> }
+  { path: '/order-confirmation', element: <ProtectedRoute><OrderConfirmation /></ProtectedRoute> },
+  { path: '/profile', element: <ProtectedRoute><Profile /></ProtectedRoute> }
 ];
 
 // Authentication routes

@@ -2,47 +2,54 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { FaCouch, FaUtensils, FaBed, FaChair, FaLightbulb, FaHome } from 'react-icons/fa';
 
+import img1 from '../assets/featured/img1.jpg'
+import img2 from '../assets/featured/img2.jpg'
+import img3 from '../assets/featured/img3.jpg'
+import img4 from '../assets/featured/img4.jpg'
+import img5 from '../assets/featured/img5.jpg'
+import img6 from '../assets/featured/img6.jpg'
+
 const categories = [
   {
     icon: FaCouch,
     name: 'Sofa Sets',
     description: 'Luxurious and comfortable sofas',
-    image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3',
+    image: img1,
     color: 'bg-rose-100'
   },
   {
     icon: FaUtensils,
     name: 'Dining Sets',
     description: 'Elegant dining furniture',
-    image: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?ixlib=rb-4.0.3',
+    image: img2,
     color: 'bg-blue-100'
   },
   {
     icon: FaBed,
     name: 'Bedroom',
     description: 'Complete bedroom solutions',
-    image: 'https://images.unsplash.com/photo-1505693314120-0d443867891c?ixlib=rb-4.0.3',
+    image: img3,
     color: 'bg-purple-100'
   },
   {
     icon: FaChair,
     name: 'Office',
     description: 'Professional office furniture',
-    image: 'https://images.unsplash.com/photo-1595846265893-f433f6cca81d?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    image: img4,
     color: 'bg-green-100'
   },
   {
     icon: FaLightbulb,
     name: 'Lighting',
     description: 'Modern lighting solutions',
-    image: 'https://plus.unsplash.com/premium_photo-1688125414593-391cf90f3103?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    image: img5,
     color: 'bg-yellow-100'
   },
   {
     icon: FaHome,
     name: 'Decor',
     description: 'Beautiful home accessories',
-    image: 'https://plus.unsplash.com/premium_photo-1680286977134-f88bd1f926ca?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    image: img6,
     color: 'bg-orange-100'
   }
 ];

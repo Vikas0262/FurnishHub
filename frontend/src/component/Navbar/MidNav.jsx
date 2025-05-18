@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { FiSearch } from "react-icons/fi";
+import React, { useState, useEffect, useRef } from "react";
+import { FiSearch, FiUser, FiLogOut, FiUser as UserIcon } from "react-icons/fi";
 import "./style.css";
 import { Link, useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import { MdOutlineShoppingCart } from "react-icons/md";
-import Badge from "@mui/material/Badge"; // ✅ Correct import
-import { styled } from "@mui/material/styles"; // ✅ Correct import
+import Badge from "@mui/material/Badge";
+import { styled } from "@mui/material/styles";
 import { FaRegHeart } from "react-icons/fa";
 import Tooltip from "@mui/material/Tooltip";
 import { RiMenu3Line, RiCloseLine } from "react-icons/ri";
+import { jwtDecode } from "jwt-decode";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -22,6 +23,49 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 function MidNav({ setIsMobileMenuOpen, isMobileMenuOpen }) {
   const navigate = useNavigate();
   const [cartItemCount, setCartItemCount] = useState(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  
+  // Get user info from token
+  const getUserInfo = () => {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    try {
+      const decoded = jwtDecode(token);
+      console.log('Decoded token:', decoded); // Debug log
+      // Try different possible name fields in the token
+      const userName = decoded.name || decoded.username || decoded.email?.split('@')[0] || 'User';
+      return {
+        name: userName,
+        firstLetter: userName.charAt(0).toUpperCase()
+      };
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
+  };
+
+  const user = getUserInfo();
+  const isLoggedIn = !!user;
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/';
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     // Update cart count whenever localStorage changes
@@ -67,20 +111,59 @@ function MidNav({ setIsMobileMenuOpen, isMobileMenuOpen }) {
 
       <div className="col3 w-full sm:w-[30%] mt-4 sm:mt-0">
         <ul className="flex items-center justify-end w-full gap-3">
-          <li>
-            <Link
-              to="/login"
-              className="link transition text-[15px] font-[500]"
-            >
-              Login
-            </Link>{" "}
-            | &nbsp;
-            <Link
-              to="/register"
-              className="link transition text-[15px] font-[500]"
-            >
-              Signup
-            </Link>
+          <li className="relative" ref={dropdownRef}>
+            {isLoggedIn ? (
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="w-10 h-10 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-semibold hover:bg-purple-200 transition-colors"
+                  aria-label="User profile"
+                >
+                  {user.firstLetter}
+                </button>
+                {isDropdownOpen && (
+                  <div className="fixed sm:absolute top-[70px] right-4 sm:right-0 sm:mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden z-[1000]">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="text-sm font-medium text-gray-900">{user.name || 'User'}</p>
+                      <p className="text-xs text-gray-500 truncate">View and manage your profile</p>
+                    </div>
+                    <div className="py-1">
+                      <Link
+                        to="/profile"
+                        className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <UserIcon className="mr-3 text-gray-500" size={18} />
+                        View Profile
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        <FiLogOut className="mr-3" size={18} />
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="link transition text-[15px] font-[500]"
+                >
+                  Login
+                </Link>{" "}
+                | &nbsp;
+                <Link
+                  to="/register"
+                  className="link transition text-[15px] font-[500]"
+                >
+                  Signup
+                </Link>
+              </>
+            )}
           </li>
           <li>
             <Tooltip title="Cart">
