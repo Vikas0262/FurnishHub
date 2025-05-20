@@ -21,15 +21,16 @@ export const HIDE_HEADER_PATHS = [
   '/forget',
   '/admin',
   '/order-confirmation',
-  '/profile'
+  '/profile',
+  '/contact'
 ];
 
 // Public routes that don't require authentication
 const publicRoutes = [
-  { path: '/', element: <ProtectedRoute><Home /></ProtectedRoute> },
-  { path: '/products', element: <ProtectedRoute><Products /></ProtectedRoute> },
-  { path: '/product-detail/:title', element: <ProtectedRoute><ProductDetail /></ProtectedRoute> },
-  { path: '/contact', element: <ProtectedRoute><Contact /></ProtectedRoute> },
+  { path: '/', element: <Home /> },
+  { path: '/products', element: <Products /> },
+  { path: '/product-detail/:title', element: <ProductDetail /> },
+  { path: '/contact', element: <Contact /> },
   { path: '/cart', element: <ProtectedRoute><Cart /></ProtectedRoute> },
   { path: '/payment', element: <ProtectedRoute><Payment /></ProtectedRoute> },
   { path: '/order-confirmation', element: <ProtectedRoute><OrderConfirmation /></ProtectedRoute> },

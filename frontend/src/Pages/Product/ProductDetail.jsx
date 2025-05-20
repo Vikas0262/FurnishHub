@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { products } from './productData';
 
 const ProductDetail = () => {
   const { title } = useParams();
-  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   useEffect(() => {
     const foundProduct = products.find(p =>
@@ -18,6 +18,14 @@ const ProductDetail = () => {
   }, [title]);
 
   const handleAddToCart = () => {
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setShowLoginPrompt(true);
+      setTimeout(() => setShowLoginPrompt(false), 3000);
+      return;
+    }
+
     if (!selectedColor) {
       alert('Please select a color');
       return;
@@ -56,6 +64,30 @@ const ProductDetail = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
+      {/* Login Prompt */}
+      {showLoginPrompt && (
+        <div className="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-6 py-3 rounded-lg z-50 flex items-center">
+          <span>Please login to add products to your cart.</span>
+          <button 
+            onClick={() => setShowLoginPrompt(false)}
+            className="ml-4 text-red-700 hover:text-red-900 font-bold"
+          >
+            ×
+          </button>
+        </div>
+      )}
+      {showLoginPrompt && (
+        <div className="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-6 py-3 rounded-lg z-50 flex items-center">
+          <span>Please login to add products to your cart.</span>
+          <button 
+            onClick={() => setShowLoginPrompt(false)}
+            className="ml-4 text-red-700 hover:text-red-900 font-bold"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       {/* Success Message */}
       {showSuccess && (
         <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in">

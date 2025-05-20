@@ -62,8 +62,17 @@ const products = [
 
 const TrendingProducts = () => {
   const [successMessage, setSuccessMessage] = useState('');
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   const handleAddToCart = (product) => {
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setShowLoginPrompt(true);
+      setTimeout(() => setShowLoginPrompt(false), 3000);
+      return;
+    }
+
     // Get existing cart items
     const existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
     
@@ -94,6 +103,18 @@ const TrendingProducts = () => {
   return (
     <section id="trending-section" className="py-20">
       <div className="container mx-auto px-4">
+        {/* Login Prompt */}
+        {showLoginPrompt && (
+          <div className="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50 flex items-center">
+            <span className="mr-2">Please login to add products to your cart.</span>
+            <button 
+              onClick={() => setShowLoginPrompt(false)}
+              className="text-red-700 hover:text-red-900 font-bold"
+            >
+              ×
+            </button>
+          </div>
+        )}
         {/* Section Header */}
         <div className="text-center mb-16">
           <motion.span
