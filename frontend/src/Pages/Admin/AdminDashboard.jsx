@@ -3,29 +3,65 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   FaBox, FaUsers, FaShoppingCart, FaChartLine, 
-  FaTachometerAlt, FaList, FaPlus, FaCog, FaSignOutAlt 
+  FaTachometerAlt, FaList, FaPlus, FaCog, FaSignOutAlt,
+  FaEdit, FaTrash, FaTimes
 } from 'react-icons/fa';
+import { getProducts, deleteProduct } from '../../services/productService';
+import ProductForm from './ProductForm';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showAddProduct, setShowAddProduct] = useState(false);
-  const [products, setProducts] = useState([
-    { id: 1, name: 'Syltherine', price: 2500000, stock: 10, category: 'Sofa' },
-    { id: 2, name: 'Leviosa', price: 2500000, stock: 15, category: 'Chair' },
-    { id: 3, name: 'Lolito', price: 7000000, stock: 5, category: 'Sofa' },
-    { id: 4, name: 'Respira', price: 500000, stock: 20, category: 'Table' },
-  ]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
     if (!isAuthenticated) {
       navigate('/admin');
+    } else {
+      fetchProducts();
     }
   }, [navigate]);
 
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await getProducts();
+      setProducts(response.products || []);
+    } catch (err) {
+      setError('Failed to fetch products');
+      console.error('Error fetching products:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteProduct = async (productId) => {
+    if (window.confirm('Are you sure you want to delete this product?')) {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('No authentication token found');
+        
+        await deleteProduct(productId, token);
+        setProducts(products.filter(product => product._id !== productId));
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to delete product');
+        console.error('Error deleting product:', err);
+      }
+    }
+  };
+
+  const handleProductAdded = () => {
+    fetchProducts();
+    setShowAddProduct(false);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('isAdminAuthenticated');
+    localStorage.removeItem('token');
     navigate('/admin');
   };
 
@@ -36,135 +72,112 @@ const AdminDashboard = () => {
     { name: 'Revenue', value: '$12.5k', icon: FaChartLine, color: 'bg-red-500' },
   ];
 
-  const menuItems = [
-    { name: 'Dashboard', icon: FaTachometerAlt, id: 'dashboard' },
-    { name: 'Products', icon: FaList, id: 'products' },
-    { name: 'Add Product', icon: FaPlus, id: 'add-product' },
-    { name: 'Settings', icon: FaCog, id: 'settings' },
-  ];
+  return (
+    <div className="min-h-screen bg-gray-100">
+      {/* Sidebar */}
+      <div className="fixed inset-y-0 left-0 w-64 bg-gray-800 text-white">
+        <div className="p-4">
+          <h1 className="text-2xl font-bold">Admin Panel</h1>
+        </div>
+        <nav className="mt-10">
+          <NavItem 
+            icon={FaTachometerAlt} 
+            text="Dashboard" 
+            active={activeTab === 'dashboard'}
+            onClick={() => setActiveTab('dashboard')}
+          />
+          <NavItem 
+            icon={FaBox} 
+            text="Products" 
+            active={activeTab === 'products'}
+            onClick={() => setActiveTab('products')}
+          />
+          <NavItem 
+            icon={FaUsers} 
+            text="Users" 
+            active={activeTab === 'users'}
+            onClick={() => setActiveTab('users')}
+          />
+          <NavItem 
+            icon={FaList} 
+            text="Orders" 
+            active={activeTab === 'orders'}
+            onClick={() => setActiveTab('orders')}
+          />
+          <NavItem 
+            icon={FaCog} 
+            text="Settings" 
+            active={activeTab === 'settings'}
+            onClick={() => setActiveTab('settings')}
+          />
+          <button 
+            onClick={handleLogout}
+            className="w-full flex items-center px-6 py-3 mt-4 text-gray-300 hover:bg-gray-700 hover:text-white"
+          >
+            <FaSignOutAlt className="mr-3" />
+            Logout
+          </button>
+        </nav>
+      </div>
 
-  const handleAddProduct = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const newProduct = {
-      id: products.length + 1,
-      name: formData.get('name'),
-      price: parseFloat(formData.get('price')),
-      stock: parseInt(formData.get('stock')),
-      category: formData.get('category'),
-    };
-    setProducts([...products, newProduct]);
-    setShowAddProduct(false);
-  };
+      {/* Main Content */}
+      <div className="ml-64 p-8">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">
+            {activeTab === 'dashboard' && 'Dashboard'}
+            {activeTab === 'products' && 'Products'}
+            {activeTab === 'users' && 'Users'}
+            {activeTab === 'orders' && 'Orders'}
+            {activeTab === 'settings' && 'Settings'}
+          </h1>
+          {activeTab === 'products' && (
+            <button
+              onClick={() => setShowAddProduct(true)}
+              className="flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+            >
+              <FaPlus className="mr-2" />
+              Add Product
+            </button>
+          )}
+        </div>
 
-  const handleDeleteProduct = (productId) => {
-    setProducts(products.filter(p => p.id !== productId));
-  };
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'dashboard':
-        return (
-          <>
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              {stats.map((stat, index) => (
-                <motion.div
-                  key={stat.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-white rounded-lg shadow-sm p-6"
-                >
-                  <div className="flex items-center">
-                    <div className={`p-3 rounded-lg ${stat.color}`}>
-                      <stat.icon className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-sm text-gray-600">{stat.name}</p>
-                      <p className="text-2xl font-semibold text-gray-900">{stat.value}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Recent Orders Table */}
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900">Recent Orders</h2>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Order ID
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Customer
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Product
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Amount
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {[1, 2, 3, 4, 5].map((item) => (
-                      <tr key={item} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          #ORD-{2024000 + item}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          Customer {item}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          Product {item}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                            Completed
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          ${(Math.random() * 1000).toFixed(2)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </>
-        );
-
-      case 'products':
-        return (
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-900">Manage Products</h2>
-              <button
-                onClick={() => setShowAddProduct(true)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        {activeTab === 'dashboard' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={stat.name}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white p-6 rounded-lg shadow"
               >
-                Add New Product
-              </button>
-            </div>
+                <div className="flex items-center">
+                  <div className={`p-3 rounded-full ${stat.color} text-white mr-4`}>
+                    <stat.icon className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">{stat.name}</p>
+                    <p className="text-2xl font-semibold text-gray-900">{stat.value}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+
+        {activeTab === 'products' && (
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            {error && (
+              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+                {error}
+              </div>
+            )}
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      ID
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Name
+                      Product
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Category
@@ -181,146 +194,98 @@ const AdminDashboard = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {products.map((product) => (
-                    <tr key={product.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        #{product.id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {product.name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {product.category}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ${product.price.toLocaleString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {product.stock}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <button
-                          onClick={() => handleDeleteProduct(product.id)}
-                          className="text-red-600 hover:text-red-800"
-                        >
-                          Delete
-                        </button>
+                  {loading ? (
+                    <tr>
+                      <td colSpan="5" className="px-6 py-4 text-center">
+                        Loading...
                       </td>
                     </tr>
-                  ))}
+                  ) : products.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                        No products found
+                      </td>
+                    </tr>
+                  ) : (
+                    products.map((product) => (
+                      <tr key={product._id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-10 w-10">
+                              {product.images?.[0]?.url ? (
+                                <img 
+                                  className="h-10 w-10 rounded-full object-cover" 
+                                  src={product.images[0].url} 
+                                  alt={product.name} 
+                                />
+                              ) : (
+                                <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                  <FaBox className="text-gray-400" />
+                                </div>
+                              )}
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                              <div className="text-sm text-gray-500">{product.seller}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{product.category}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">${product.price?.toFixed(2) || '0.00'}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            product.stock > 5 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                          }`}>
+                            {product.stock} in stock
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <button
+                            onClick={() => { /* Implement edit */ }}
+                            className="text-indigo-600 hover:text-indigo-900 mr-4"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteProduct(product._id)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            <FaTrash />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
-        );
-
-      case 'add-product':
-        return (
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-6">Add New Product</h2>
-            <form onSubmit={handleAddProduct} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Product Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Category</label>
-                <select
-                  name="category"
-                  required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
-                >
-                  <option value="Sofa">Sofa</option>
-                  <option value="Chair">Chair</option>
-                  <option value="Table">Table</option>
-                  <option value="Bed">Bed</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Price</label>
-                <input
-                  type="number"
-                  name="price"
-                  required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Stock</label>
-                <input
-                  type="number"
-                  name="stock"
-                  required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
-                />
-              </div>
-              <div className="flex justify-end space-x-3">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('products')}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-                >
-                  Add Product
-                </button>
-              </div>
-            </form>
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-100 flex">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-sm">
-        <div className="p-6 border-b border-gray-200">
-          <h1 className="text-2xl font-bold text-gray-900">Admin Panel</h1>
-        </div>
-        <nav className="mt-6">
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center px-6 py-3 text-left ${
-                activeTab === item.id ? 'bg-red-50 text-red-600' : 'text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              <item.icon className="w-5 h-5 mr-3" />
-              {item.name}
-            </button>
-          ))}
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center px-6 py-3 text-left text-gray-600 hover:bg-gray-50"
-          >
-            <FaSignOutAlt className="w-5 h-5 mr-3" />
-            Logout
-          </button>
-        </nav>
+        )}
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-auto">
-        <div className="py-8 px-6">
-          {renderContent()}
-        </div>
-      </div>
+      {/* Add Product Modal */}
+      {showAddProduct && (
+        <ProductForm
+          onClose={() => setShowAddProduct(false)}
+          onProductAdded={handleProductAdded}
+        />
+      )}
     </div>
   );
 };
 
-export default AdminDashboard; 
+const NavItem = ({ icon: Icon, text, active, onClick }) => (
+  <button
+    onClick={onClick}
+    className={`w-full flex items-center px-6 py-3 mt-1 ${active ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}`}
+  >
+    <Icon className="mr-3" />
+    {text}
+  </button>
+);
+
+export default AdminDashboard;

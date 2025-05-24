@@ -26,6 +26,10 @@ const Cart = () => {
     setCartItems(updatedItems);
     calculateTotal(updatedItems);
     localStorage.setItem('cartItems', JSON.stringify(updatedItems));
+    
+    // Dispatch custom event to update cart count in the navbar
+    const event = new Event('cartUpdated');
+    window.dispatchEvent(event);
   };
 
   const handleItemClick = (item) => {

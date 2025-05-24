@@ -19,7 +19,7 @@ export const HIDE_HEADER_PATHS = [
   '/login',
   '/register',
   '/forget',
-  '/admin',
+  '/admin/dashboard',
   '/order-confirmation',
   '/profile',
   '/contact'
@@ -29,7 +29,7 @@ export const HIDE_HEADER_PATHS = [
 const publicRoutes = [
   { path: '/', element: <Home /> },
   { path: '/products', element: <Products /> },
-  { path: '/product-detail/:title', element: <ProductDetail /> },
+  { path: '/product/:id', element: <ProductDetail /> },
   { path: '/contact', element: <Contact /> },
   { path: '/cart', element: <ProtectedRoute><Cart /></ProtectedRoute> },
   { path: '/payment', element: <ProtectedRoute><Payment /></ProtectedRoute> },

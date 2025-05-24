@@ -2,6 +2,7 @@ import chair from '../../assets/products/chair.jpg';
 import sofa from '../../assets/products/sofa.jpeg';
 import diningTable from '../../assets/products/dining-table.jpg';
 import studyTable from '../../assets/products/study-table.jpg';
+// import ImageUpload from '../component/ImageUpload.js';
 
 export const products = [
   { id: 1, name: 'Chair', price: 2500000, image: chair, category: 'Sofa' },

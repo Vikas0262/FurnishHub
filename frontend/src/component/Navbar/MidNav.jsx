@@ -30,19 +30,19 @@ function MidNav({ setIsMobileMenuOpen, isMobileMenuOpen }) {
   const getUserInfo = () => {
     const token = localStorage.getItem('token');
     if (!token) return null;
-    try {
-      const decoded = jwtDecode(token);
-      console.log('Decoded token:', decoded); // Debug log
-      // Try different possible name fields in the token
-      const userName = decoded.name || decoded.username || decoded.email?.split('@')[0] || 'User';
-      return {
-        name: userName,
-        firstLetter: userName.charAt(0).toUpperCase()
-      };
-    } catch (error) {
-      console.error('Error decoding token:', error);
-      return null;
-    }
+    // try {
+    //   const decoded = jwtDecode(token);
+    //   console.log('Decoded token:', decoded); // Debug log
+    //   // Try different possible name fields in the token
+    //   const userName = decoded.name || decoded.username || decoded.email?.split('@')[0] || 'User';
+    //   return {
+    //     name: userName,
+    //     firstLetter: userName.charAt(0).toUpperCase()
+    //   };
+    // } catch (error) {
+    //   console.error('Error decoding token:', error);
+    //   return null;
+    // }
   };
 
   const user = getUserInfo();
@@ -67,19 +67,26 @@ function MidNav({ setIsMobileMenuOpen, isMobileMenuOpen }) {
     };
   }, []);
 
-  useEffect(() => {
-    // Update cart count whenever localStorage changes
-    const updateCartCount = () => {
-      const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-      setCartItemCount(cartItems.length);
-    };
+  const updateCartCount = () => {
+    const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    setCartItemCount(cartItems.length);
+  };
 
+  useEffect(() => {
     // Initial count
     updateCartCount();
 
-    // Listen for storage changes
+    // Listen for storage changes (for changes from other tabs)
     window.addEventListener('storage', updateCartCount);
-    return () => window.removeEventListener('storage', updateCartCount);
+    
+    // Listen for custom event (for changes in the same tab)
+    window.addEventListener('cartUpdated', updateCartCount);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('storage', updateCartCount);
+      window.removeEventListener('cartUpdated', updateCartCount);
+    };
   }, []);
 
   return (

@@ -4,11 +4,19 @@ import { Heart } from "lucide-react";
 const ProductCard = ({ product }) => {
   return (
     <div className="">
-      <img
-        src={product.image}
-        alt={product.name}
-        className="w-full h-60 object-cover rounded-lg"
-      />
+      <div className="relative w-full h-60 bg-gray-100 rounded-lg overflow-hidden">
+        {product.images && product.images.length > 0 ? (
+          <img
+            src={product.images[0].url}
+            alt={product.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
+            No Image Available
+          </div>
+        )}
+      </div>
       <button className="absolute top-4 right-4">
         {/* <Heart className="text-gray-400 hover:text-red-500" /> */}
       </button>
