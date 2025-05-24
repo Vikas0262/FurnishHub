@@ -30,19 +30,19 @@ function MidNav({ setIsMobileMenuOpen, isMobileMenuOpen }) {
   const getUserInfo = () => {
     const token = localStorage.getItem('token');
     if (!token) return null;
-    // try {
-    //   const decoded = jwtDecode(token);
-    //   console.log('Decoded token:', decoded); // Debug log
-    //   // Try different possible name fields in the token
-    //   const userName = decoded.name || decoded.username || decoded.email?.split('@')[0] || 'User';
-    //   return {
-    //     name: userName,
-    //     firstLetter: userName.charAt(0).toUpperCase()
-    //   };
-    // } catch (error) {
-    //   console.error('Error decoding token:', error);
-    //   return null;
-    // }
+    try {
+      const decoded = jwtDecode(token);
+      console.log('Decoded token:', decoded); // Debug log
+      // Try different possible name fields in the token
+      const userName = decoded.name || decoded.username || decoded.email?.split('@')[0] || 'User';
+      return {
+        name: userName,
+        firstLetter: userName.charAt(0).toUpperCase()
+      };
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
   };
 
   const user = getUserInfo();
