@@ -22,7 +22,8 @@ export const HIDE_HEADER_PATHS = [
   '/admin/dashboard',
   '/order-confirmation',
   '/profile',
-  '/contact'
+  '/contact',
+  '/admin'
 ];
 
 // Public routes that don't require authentication

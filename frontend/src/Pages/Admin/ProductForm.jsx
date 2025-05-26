@@ -3,19 +3,20 @@ import { FaTimes, FaTrash } from 'react-icons/fa';
 import { createProduct, updateProduct, deleteProduct } from '../../services/productService';
 import { useNavigate } from 'react-router-dom';
 
-const ProductForm = ({ onClose, onProductAdded, product: productToEdit }) => {
+const ProductForm = ({ onClose, onProductAdded, productToEdit }) => {
   const navigate = useNavigate();
   const isEditMode = !!productToEdit;
   
   // Initialize form with product data if in edit mode
   useEffect(() => {
+    console.log('ProductForm - productToEdit:', productToEdit);
     if (isEditMode && productToEdit) {
       setProductData({
         name: productToEdit.name || '',
-        price: productToEdit.price || '',
+        price: productToEdit.price || 0,
         description: productToEdit.description || '',
         category: productToEdit.category || 'Electronics',
-        stock: productToEdit.stock || '',
+        stock: productToEdit.stock || 0,
         seller: productToEdit.seller || '',
         image: null
       });
@@ -23,14 +24,26 @@ const ProductForm = ({ onClose, onProductAdded, product: productToEdit }) => {
       if (productToEdit.images && productToEdit.images.length > 0) {
         setImagePreview(productToEdit.images[0].url);
       }
+    } else {
+      // Reset form for new product
+      setProductData({
+        name: '',
+        price: 0,
+        description: '',
+        category: 'Electronics',
+        stock: 0,
+        seller: '',
+        image: null
+      });
+      setImagePreview('');
     }
-  }, [isEditMode, productToEdit]);
+  }, [productToEdit]);
   const [productData, setProductData] = useState({
     name: '',
-    price: '',
+    price: 0,
     description: '',
     category: 'Electronics',
-    stock: '',
+    stock: 0,
     seller: '',
     image: null
   });
@@ -85,22 +98,43 @@ const ProductForm = ({ onClose, onProductAdded, product: productToEdit }) => {
     setError('');
     
     try {
+      console.log('Submitting form data:', productData);
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found');
       }
       
-      if (isEditMode) {
-        await updateProduct(productToEdit._id, productData, token);
-      } else {
-        await createProduct(productData, token);
+      const formData = new FormData();
+      formData.append('name', productData.name);
+      formData.append('price', Number(productData.price));
+      formData.append('description', productData.description);
+      formData.append('category', productData.category);
+      formData.append('stock', Number(productData.stock));
+      formData.append('seller', productData.seller);
+      if (productData.image) {
+        formData.append('image', productData.image);
       }
       
-      if (onProductAdded) onProductAdded();
-      if (onClose) onClose();
+      console.log('Form data prepared:', Object.fromEntries(formData.entries()));
+      
+      if (isEditMode && productToEdit?._id) {
+        console.log('Updating product:', productToEdit._id);
+        await updateProduct(productToEdit._id, formData, token);
+      } else {
+        console.log('Creating new product');
+        await createProduct(formData, token);
+      }
+      
+      onProductAdded();
+      onClose();
     } catch (err) {
-      setError(err.response?.data?.message || `Failed to ${isEditMode ? 'update' : 'create'} product`);
-      console.error(`Error ${isEditMode ? 'updating' : 'creating'} product:`, err);
+      const errorMessage = isEditMode ? 'Failed to update product' : 'Failed to create product';
+      setError(err.response?.data?.message || errorMessage);
+      console.error('Error saving product:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
     } finally {
       setLoading(false);
     }
@@ -131,46 +165,47 @@ const ProductForm = ({ onClose, onProductAdded, product: productToEdit }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl relative">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-gray-800">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl relative flex flex-col" style={{ maxHeight: '90vh' }}>
+        <div className="p-3">
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-lg font-semibold text-gray-800">
               {isEditMode ? 'Edit Product' : 'Add New Product'}
             </h2>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               {isEditMode && (
                 <button
                   type="button"
                   onClick={handleDelete}
                   disabled={loading}
-                  className="text-red-500 hover:text-red-700 disabled:opacity-50"
+                  className="p-1 text-red-500 hover:text-red-700 disabled:opacity-50 rounded-full hover:bg-red-50"
                   title="Delete Product"
                 >
-                  <FaTrash className="w-5 h-5" />
+                  <FaTrash className="w-3.5 h-3.5" />
                 </button>
               )}
               <button 
                 onClick={onClose}
-                className="text-gray-500 hover:text-gray-700"
+                className="p-1 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
                 disabled={loading}
                 title="Close"
               >
-                <FaTimes className="w-6 h-6" />
+                <FaTimes className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
           
           {error && (
-            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+            <div className="mb-3 p-2 text-sm bg-red-50 text-red-600 rounded border border-red-100">
               {error}
             </div>
           )}
           
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="flex flex-col h-full">
+            <div className="overflow-y-auto flex-1 -mx-3 px-3 py-1" style={{ maxHeight: 'calc(90vh - 120px)' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 py-1">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-gray-600 mb-1">
                   Product Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -252,7 +287,7 @@ const ProductForm = ({ onClose, onProductAdded, product: productToEdit }) => {
                   Product Image <span className="text-red-500">*</span>
                 </label>
                 <div className="mt-1 flex items-center">
-                  <label className="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                  <label className="cursor-pointer bg-white py-1.5 px-2.5 border border-gray-300 rounded shadow-sm text-xs leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-red-500">
                     Choose File
                     <input
                       type="file"
@@ -263,7 +298,7 @@ const ProductForm = ({ onClose, onProductAdded, product: productToEdit }) => {
                       required
                     />
                   </label>
-                  <span className="ml-3 text-sm text-gray-500">
+                  <span className="ml-2 text-xs text-gray-500 truncate max-w-[180px]">
                     {productData.image ? productData.image.name : 'No file chosen'}
                   </span>
                 </div>
@@ -284,30 +319,31 @@ const ProductForm = ({ onClose, onProductAdded, product: productToEdit }) => {
                 </label>
                 <textarea
                   name="description"
-                  rows="3"
+                  rows="2"
                   value={productData.description}
                   onChange={handleChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-red-500"
                 />
               </div>
             </div>
             
-            <div className="flex justify-end space-x-3 pt-4">
+            </div>
+            <div className="border-t border-gray-200 px-4 py-3 flex justify-end space-x-2 bg-gray-50 rounded-b-lg">
               <button
                 type="button"
                 onClick={onClose}
                 disabled={loading}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+                className="px-3 py-1.5 text-xs border border-gray-300 rounded shadow-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-red-500 disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+                className="px-3 py-1.5 text-xs border border-transparent rounded shadow-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-1 focus:ring-red-500 disabled:opacity-50"
               >
-                {loading ? 'Saving...' : isEditMode ? 'Update Product' : 'Save Product'}
+                {loading ? 'Saving...' : isEditMode ? 'Update' : 'Save'}
               </button>
             </div>
           </form>

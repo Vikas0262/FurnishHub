@@ -2,6 +2,166 @@ const Product = require('../models/Product');
 const ErrorHandler = require('../utils/errorHandler');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const cloudinary = require('cloudinary');
+const mongoose = require('mongoose');
+
+// Admin: Get all products with filtering and pagination
+const adminGetProducts = catchAsyncErrors(async (req, res, next) => {
+  try {
+    const { page = 1, limit = 10, search = '', category = '' } = req.query;
+    const skip = (page - 1) * limit;
+
+    // Build query
+    const query = {};
+    
+    // Add search filter
+    if (search) {
+      query.name = { $regex: search, $options: 'i' };
+    }
+    
+    // Add category filter
+    if (category) {
+      query.category = category;
+    }
+
+    // Get products with pagination
+    const products = await Product.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .populate('user', 'name email');
+
+    // Get total count for pagination
+    const total = await Product.countDocuments(query);
+
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      total,
+      pages: Math.ceil(total / limit),
+      currentPage: parseInt(page),
+      products
+    });
+  } catch (error) {
+    console.error('Error in adminGetProducts:', error);
+    next(new ErrorHandler('Error fetching products', 500));
+  }
+});
+
+// Admin: Get single product by ID
+const adminGetProduct = catchAsyncErrors(async (req, res, next) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return next(new ErrorHandler('Invalid product ID', 400));
+    }
+
+    const product = await Product.findById(req.params.id).populate('user', 'name email');
+    
+    if (!product) {
+      return next(new ErrorHandler('Product not found', 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      product
+    });
+  } catch (error) {
+    console.error('Error in adminGetProduct:', error);
+    next(new ErrorHandler('Error fetching product', 500));
+  }
+});
+
+// Admin: Update product
+const adminUpdateProduct = catchAsyncErrors(async (req, res, next) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return next(new ErrorHandler('Invalid product ID', 400));
+    }
+
+    let product = await Product.findById(req.params.id);
+    
+    if (!product) {
+      return next(new ErrorHandler('Product not found', 404));
+    }
+
+    // Prepare update data
+    const updateData = { ...req.body };
+    
+    // Handle image upload if new image is provided
+    if (req.file) {
+      // Delete old image from Cloudinary if exists
+      if (product.images && product.images.length > 0 && product.images[0].public_id) {
+        await cloudinary.v2.uploader.destroy(product.images[0].public_id);
+      }
+
+      // Upload new image
+      const result = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.v2.uploader.upload_stream(
+          {
+            folder: 'furnishhub/products',
+            width: 1500,
+            crop: 'scale'
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        uploadStream.end(req.file.buffer);
+      });
+
+      updateData.images = [{
+        public_id: result.public_id,
+        url: result.secure_url
+      }];
+    }
+
+    // Update product
+    product = await Product.findByIdAndUpdate(req.params.id, updateData, {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Product updated successfully',
+      product
+    });
+  } catch (error) {
+    console.error('Error in adminUpdateProduct:', error);
+    next(new ErrorHandler('Error updating product', 500));
+  }
+});
+
+// Admin: Delete product
+const adminDeleteProduct = catchAsyncErrors(async (req, res, next) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return next(new ErrorHandler('Invalid product ID', 400));
+    }
+
+    const product = await Product.findById(req.params.id);
+    
+    if (!product) {
+      return next(new ErrorHandler('Product not found', 404));
+    }
+
+    // Delete image from Cloudinary if exists
+    if (product.images && product.images.length > 0 && product.images[0].public_id) {
+      await cloudinary.v2.uploader.destroy(product.images[0].public_id);
+    }
+
+    await product.remove();
+
+    res.status(200).json({
+      success: true,
+      message: 'Product deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error in adminDeleteProduct:', error);
+    next(new ErrorHandler('Error deleting product', 500));
+  }
+});
 
 // Create new product   =>  /api/v1/product/new
 const createProduct = catchAsyncErrors(async (req, res, next) => {
@@ -317,9 +477,16 @@ const deleteProduct = catchAsyncErrors(async (req, res, next) => {
 });
 
 module.exports = {
+  // Regular user functions
   createProduct,
   getProducts,
   getSingleProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  
+  // Admin functions
+  adminGetProducts,
+  adminGetProduct,
+  adminUpdateProduct,
+  adminDeleteProduct
 };

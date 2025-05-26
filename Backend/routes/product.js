@@ -6,9 +6,13 @@ const {
   getProducts, 
   getSingleProduct, 
   updateProduct, 
-  deleteProduct 
+  deleteProduct,
+  adminGetProducts,
+  adminGetProduct,
+  adminUpdateProduct,
+  adminDeleteProduct
 } = require('../controllers/productController');
-const { isAuthenticatedUser } = require('../middleware/auth');
+const { isAuthenticatedUser, authorizeRoles } = require('../middleware/auth');
 
 // Configure multer for file upload with memory storage
 const storage = multer.memoryStorage();
@@ -38,6 +42,21 @@ router.route('/product/new').post(
   createProduct
 );
 
+// Admin product management routes
+router.route('/admin/products')
+  .get(isAuthenticatedUser, authorizeRoles('admin'), adminGetProducts);
+
+router.route('/admin/product/:id')
+  .get(isAuthenticatedUser, authorizeRoles('admin'), adminGetProduct)
+  .put(
+    isAuthenticatedUser, 
+    authorizeRoles('admin'), 
+    upload.single('image'), 
+    adminUpdateProduct
+  )
+  .delete(isAuthenticatedUser, authorizeRoles('admin'), adminDeleteProduct);
+
+// Regular user product routes
 router.route('/product/:id')
   .put(isAuthenticatedUser, upload.single('image'), updateProduct)
   .delete(isAuthenticatedUser, deleteProduct);

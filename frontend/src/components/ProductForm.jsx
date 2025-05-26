@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { createProduct } from '../services/productService';
+import { useState, useEffect } from 'react';
+import { createProduct, updateProduct } from '../services/productService';
 
-const ProductForm = ({ onClose, onProductAdded }) => {
+const ProductForm = ({ onClose, onProductAdded, productToEdit }) => {
   const [productData, setProductData] = useState({
     name: '',
     price: 0,
@@ -11,6 +11,33 @@ const ProductForm = ({ onClose, onProductAdded }) => {
     seller: '',
     images: []
   });
+
+  // Initialize form with product data if in edit mode
+  useEffect(() => {
+    if (productToEdit) {
+      console.log('Setting product data:', productToEdit);
+      setProductData({
+        name: productToEdit.name || '',
+        price: productToEdit.price || 0,
+        description: productToEdit.description || '',
+        category: productToEdit.category || 'Electronics',
+        stock: productToEdit.stock || 0,
+        seller: productToEdit.seller || '',
+        images: productToEdit.images || []
+      });
+    } else {
+      // Reset form for new product
+      setProductData({
+        name: '',
+        price: 0,
+        description: '',
+        category: 'Electronics',
+        stock: 0,
+        seller: '',
+        images: []
+      });
+    }
+  }, [productToEdit]);
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -32,6 +59,7 @@ const ProductForm = ({ onClose, onProductAdded }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(`Field changed - ${name}:`, value);
     setProductData(prev => ({
       ...prev,
       [name]: name === 'price' || name === 'stock' ? Number(value) : value
@@ -49,12 +77,31 @@ const ProductForm = ({ onClose, onProductAdded }) => {
         throw new Error('No authentication token found');
       }
       
-      await createProduct(productData, token);
+      console.log('Submitting form data:', productData);
+      
+      if (productToEdit) {
+        // Update existing product
+        console.log('Updating product:', productToEdit._id);
+        await updateProduct(productToEdit._id, productData, token);
+      } else {
+        // Create new product
+        console.log('Creating new product');
+        await createProduct(productData, token);
+      }
+      
       onProductAdded();
       onClose();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to create product');
-      console.error('Error creating product:', err);
+      const errorMessage = productToEdit 
+        ? 'Failed to update product' 
+        : 'Failed to create product';
+      setError(err.response?.data?.message || errorMessage);
+      console.error('Error:', err);
+      console.error('Error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
     } finally {
       setLoading(false);
     }
@@ -65,7 +112,9 @@ const ProductForm = ({ onClose, onProductAdded }) => {
       <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl">
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-gray-800">Add New Product</h2>
+            <h2 className="text-2xl font-bold text-gray-800">
+              {productToEdit ? 'Edit Product' : 'Add New Product'}
+            </h2>
             <button 
               onClick={onClose}
               className="text-gray-500 hover:text-gray-700"
@@ -175,7 +224,9 @@ const ProductForm = ({ onClose, onProductAdded }) => {
                 disabled={loading}
                 className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
               >
-                {loading ? 'Adding...' : 'Add Product'}
+                {loading 
+                  ? (productToEdit ? 'Updating...' : 'Adding...') 
+                  : (productToEdit ? 'Update Product' : 'Add Product')}
               </button>
             </div>
           </form>

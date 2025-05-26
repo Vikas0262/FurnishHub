@@ -1,21 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+// Animation components are imported but not used in this file
 import { 
   FaBox, FaUsers, FaShoppingCart, FaChartLine, 
   FaTachometerAlt, FaList, FaPlus, FaCog, FaSignOutAlt,
-  FaEdit, FaTrash, FaTimes
+  FaEdit, FaTrash, FaBars, FaTimes
 } from 'react-icons/fa';
 import { getProducts, deleteProduct } from '../../services/productService';
-import ProductForm from './ProductForm';
+import ProductForm from './ProductForm.jsx';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [showAddProduct, setShowAddProduct] = useState(false);
+  const [showProductForm, setShowProductForm] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (!mobile) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
@@ -54,9 +76,43 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleProductAdded = () => {
+  const handleProductUpdated = () => {
     fetchProducts();
-    setShowAddProduct(false);
+    setShowProductForm(false);
+    setEditingProduct(null);
+  };
+
+  const handleAddProduct = () => {
+    setEditingProduct(null);
+    setShowProductForm(true);
+  };
+
+  const handleEditProduct = (product) => {
+    console.log('Editing product:', product);
+    
+    // Ensure we have a valid product object
+    if (!product || !product._id) {
+      console.error('Invalid product data:', product);
+      setError('Invalid product data');
+      return;
+    }
+    
+    // Set the form to be visible first
+    setShowProductForm(true);
+    
+    // Then update the product data
+    setEditingProduct({
+      _id: product._id,
+      name: product.name || '',
+      price: product.price || 0,
+      description: product.description || '',
+      category: product.category || 'Electronics',
+      stock: product.stock || 0,
+      seller: product.seller || '',
+      images: product.images || []
+    });
+    
+    console.log('Edit form should now be visible');
   };
 
   const handleLogout = () => {
@@ -73,56 +129,106 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="fixed inset-y-0 left-0 w-64 bg-gray-800 text-white">
-        <div className="p-4">
-          <h1 className="text-2xl font-bold">Admin Panel</h1>
+    <div className="flex h-screen bg-gray-100 overflow-hidden">
+      {/* Mobile header */}
+      <div className="md:hidden bg-gray-900 text-white p-2 flex justify-between items-center fixed w-full z-20">
+        <div className="flex items-center space-x-2">
+          <button 
+            onClick={toggleSidebar}
+            className="text-white focus:outline-none"
+            aria-label="Toggle menu"
+          >
+            {isSidebarOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          </button>
+          <div className="flex items-center space-x-2">
+            <FaBox className="h-6 w-6 text-red-500" />
+            <span className="text-xl font-extrabold">Admin</span>
+          </div>
         </div>
-        <nav className="mt-10">
+      </div>
+
+      {/* Sidebar */}
+      <div 
+        className={`bg-gray-900 text-white w-56 space-y-4 py-4 px-2 fixed inset-y-0 left-0 transform transition-transform duration-300 ease-in-out z-10 md:translate-x-0 ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <div className="flex items-center space-x-2 px-3 mt-6 md:mt-2">
+          <FaBox className="h-8 w-8 text-red-500 hidden md:block" />
+          <span className="text-2xl font-extrabold hidden md:block">Admin</span>
+        </div>
+        
+        <nav className="mt-6 md:mt-2 space-y-1">
           <NavItem 
             icon={FaTachometerAlt} 
             text="Dashboard" 
-            active={activeTab === 'dashboard'}
-            onClick={() => setActiveTab('dashboard')}
+            active={activeTab === 'dashboard'} 
+            onClick={() => {
+              setActiveTab('dashboard');
+              if (isMobile) setIsSidebarOpen(false);
+            }} 
           />
           <NavItem 
             icon={FaBox} 
             text="Products" 
-            active={activeTab === 'products'}
-            onClick={() => setActiveTab('products')}
+            active={activeTab === 'products'} 
+            onClick={() => {
+              setActiveTab('products');
+              if (isMobile) setIsSidebarOpen(false);
+            }} 
           />
           <NavItem 
             icon={FaUsers} 
             text="Users" 
-            active={activeTab === 'users'}
-            onClick={() => setActiveTab('users')}
+            active={activeTab === 'users'} 
+            onClick={() => {
+              setActiveTab('users');
+              if (isMobile) setIsSidebarOpen(false);
+            }} 
           />
           <NavItem 
-            icon={FaList} 
+            icon={FaShoppingCart} 
             text="Orders" 
-            active={activeTab === 'orders'}
-            onClick={() => setActiveTab('orders')}
+            active={activeTab === 'orders'} 
+            onClick={() => {
+              setActiveTab('orders');
+              if (isMobile) setIsSidebarOpen(false);
+            }} 
+          />
+          <NavItem 
+            icon={FaChartLine} 
+            text="Analytics" 
+            active={activeTab === 'analytics'} 
+            onClick={() => {
+              setActiveTab('analytics');
+              if (isMobile) setIsSidebarOpen(false);
+            }} 
           />
           <NavItem 
             icon={FaCog} 
             text="Settings" 
-            active={activeTab === 'settings'}
-            onClick={() => setActiveTab('settings')}
+            active={activeTab === 'settings'} 
+            onClick={() => {
+              setActiveTab('settings');
+              if (isMobile) setIsSidebarOpen(false);
+            }} 
           />
+        </nav>
+        
+        <div className="absolute bottom-0 w-full left-0 p-2">
           <button 
             onClick={handleLogout}
-            className="w-full flex items-center px-6 py-3 mt-4 text-gray-300 hover:bg-gray-700 hover:text-white"
+            className="flex items-center space-x-2 w-full px-3 py-1.5 text-sm text-gray-300 hover:bg-gray-800 rounded-md hover:text-white"
           >
-            <FaSignOutAlt className="mr-3" />
-            Logout
+            <FaSignOutAlt />
+            <span>Logout</span>
           </button>
-        </nav>
+        </div>
       </div>
 
       {/* Main Content */}
-      <div className="ml-64 p-8">
-        <div className="flex justify-between items-center mb-8">
+      <div className="flex-1 flex flex-col overflow-hidden md:ml-56 pt-14 md:pt-0">
+        <div className="flex justify-between items-center p-4 md:p-6 pb-2 md:pb-4">
           <h1 className="text-3xl font-bold text-gray-800">
             {activeTab === 'dashboard' && 'Dashboard'}
             {activeTab === 'products' && 'Products'}
@@ -132,7 +238,7 @@ const AdminDashboard = () => {
           </h1>
           {activeTab === 'products' && (
             <button
-              onClick={() => setShowAddProduct(true)}
+              onClick={handleAddProduct}
               className="flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
             >
               <FaPlus className="mr-2" />
@@ -142,7 +248,7 @@ const AdminDashboard = () => {
         </div>
 
         {activeTab === 'dashboard' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 mx-10">
             {stats.map((stat, index) => (
               <motion.div
                 key={stat.name}
@@ -166,7 +272,7 @@ const AdminDashboard = () => {
         )}
 
         {activeTab === 'products' && (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="bg-white rounded-lg shadow overflow-hidden mx-8">
             {error && (
               <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
                 {error}
@@ -243,10 +349,11 @@ const AdminDashboard = () => {
                             {product.stock} in stock
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
                           <button
-                            onClick={() => { /* Implement edit */ }}
-                            className="text-indigo-600 hover:text-indigo-900 mr-4"
+                            onClick={() => handleEditProduct(product)}
+                            className="text-indigo-600 hover:text-indigo-900 mr-2"
+                            title="Edit product"
                           >
                             <FaEdit />
                           </button>
@@ -267,25 +374,43 @@ const AdminDashboard = () => {
         )}
       </div>
 
-      {/* Add Product Modal */}
-      {showAddProduct && (
-        <ProductForm
-          onClose={() => setShowAddProduct(false)}
-          onProductAdded={handleProductAdded}
+      {/* Backdrop for mobile sidebar */}
+      {isSidebarOpen && isMobile && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-0 md:hidden"
+          onClick={toggleSidebar}
         />
+      )}
+
+      {/* Product Form Modal */}
+      {showProductForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white shadow rounded-lg p-3 md:p-4">
+            <ProductForm
+              productToEdit={editingProduct}
+              onClose={() => {
+                setShowProductForm(false);
+                setEditingProduct(null);
+              }}
+              onProductAdded={handleProductUpdated}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
 };
 
-const NavItem = ({ icon: Icon, text, active, onClick }) => (
-  <button
-    onClick={onClick}
-    className={`w-full flex items-center px-6 py-3 mt-1 ${active ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}`}
-  >
-    <Icon className="mr-3" />
-    {text}
-  </button>
-);
+const NavItem = ({ icon: Icon, text, active, onClick }) => {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center px-6 py-3 mt-1 ${active ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}`}
+    >
+      {React.createElement(Icon, { className: "mr-3" })}
+      {text}
+    </button>
+  );
+};
 
 export default AdminDashboard;

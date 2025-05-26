@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { FaArrowLeft } from 'react-icons/fa';
 
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
@@ -24,9 +25,16 @@ const AdminLogin = () => {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg"
+        className="relative max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg"
       >
-        <div>
+        <button
+          onClick={() => window.history.back()}
+          className="absolute top-4 left-4 p-2 rounded-full bg-white shadow-sm text-gray-500 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
+          aria-label="Go back"
+        >
+          <FaArrowLeft className="h-5 w-5" />
+        </button>
+        <div className="pt-6">
           <h2 className="text-3xl font-bold text-center text-gray-900">Admin Login</h2>
           <p className="mt-2 text-center text-gray-600">
             Please sign in to access the admin dashboard

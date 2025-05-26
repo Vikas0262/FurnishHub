@@ -38,9 +38,16 @@ const isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
       return next(new ErrorHandler('Invalid token format', 401));
     }
     
-    // Set user ID to request object
+    // Get user from database and attach to request
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new ErrorHandler('User not found', 401));
+    }
+    
+    // Set user and user ID to request object
+    req.user = user;
     req.userId = userId;
-    console.log('Set req.userId to:', req.userId);
+    console.log('Set req.user and req.userId');
     
     next();
   } catch (error) {
@@ -49,9 +56,13 @@ const isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   }
 });
 
-// Handling roles
+// Authorize user roles
 const authorizeRoles = (...roles) => {
   return (req, res, next) => {
+    if (!req.user) {
+      return next(new ErrorHandler('User not authenticated', 401));
+    }
+    
     if (!roles.includes(req.user.role)) {
       return next(
         new ErrorHandler(
