@@ -37,16 +37,22 @@ export const getProducts = async () => {
 
 // Update product
 export const updateProduct = async (id, productData, token) => {
-  const formData = new FormData();
+  console.log('Product Data:', productData);
   
-  // Append all product data to formData
-  Object.keys(productData).forEach(key => {
-    if (key === 'image' && productData[key]) {
-      formData.append('image', productData[key]);
-    } else if (productData[key] !== null && productData[key] !== undefined) {
-      formData.append(key, productData[key]);
-    }
-  });
+  // If productData is already a FormData object, use it directly
+  let formData = productData instanceof FormData ? productData : new FormData();
+  
+  // Only process if productData is not already a FormData object
+  if (!(productData instanceof FormData)) {
+    // Append all product data to formData
+    Object.keys(productData).forEach(key => {
+      if (key === 'image' && productData[key]) {
+        formData.append('image', productData[key]);
+      } else if (productData[key] !== null && productData[key] !== undefined) {
+        formData.append(key, productData[key]);
+      }
+    });
+  }
 
   const config = {
     headers: {

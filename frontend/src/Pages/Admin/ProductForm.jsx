@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useState, useEffect } from 'react';
 import { FaTimes, FaTrash } from 'react-icons/fa';
 import { createProduct, updateProduct, deleteProduct } from '../../services/productService';
 import { useNavigate } from 'react-router-dom';
@@ -295,7 +296,8 @@ const ProductForm = ({ onClose, onProductAdded, productToEdit }) => {
                       accept="image/*"
                       onChange={handleChange}
                       className="sr-only"
-                      required
+                      // required
+                      required={!isEditMode}
                     />
                   </label>
                   <span className="ml-2 text-xs text-gray-500 truncate max-w-[180px]">
