@@ -1,9 +1,11 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-require('dotenv').config();
-const cookieParser = require('cookie-parser');
-const ErrorHandler = require('./utils/errorHandler');
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import ErrorHandler from './utils/errorHandler.js';
+
+dotenv.config();
 
 const app = express();
 app.use(cors({
@@ -20,10 +22,14 @@ mongoose.connect(process.env.MONGO_URI )
 .catch((err) => console.error('MongoDB connection error:', err));
 
 // Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/contact', require('./routes/contact'));
-app.use('/api', require('./routes/uploadRoute'));
-const productRoutes = require('./routes/product');
+import authRoutes from './routes/auth.js';
+import contactRoutes from './routes/contact.js';
+import uploadRoutes from './routes/uploadRoute.js';
+import productRoutes from './routes/product.js';
+
+app.use('/api/auth', authRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api', uploadRoutes);
 app.use('/api/v1', productRoutes);
 
 // Handle unhandled routes

@@ -1,8 +1,8 @@
-const Product = require('../models/Product');
-const ErrorHandler = require('../utils/errorHandler');
-const catchAsyncErrors = require('../middleware/catchAsyncErrors');
-const cloudinary = require('cloudinary');
-const mongoose = require('mongoose');
+import Product from '../models/Product.js';
+import ErrorHandler from '../utils/errorHandler.js';
+import catchAsyncErrors from '../middleware/catchAsyncErrors.js';
+import cloudinary from 'cloudinary';
+import mongoose from 'mongoose';
 
 // Admin: Get all products with filtering and pagination
 const adminGetProducts = catchAsyncErrors(async (req, res, next) => {
@@ -476,17 +476,17 @@ const deleteProduct = catchAsyncErrors(async (req, res, next) => {
   }
 });
 
-module.exports = {
-  // Regular user functions
+export {
+  adminGetProducts,
+  adminGetProduct,
+  adminUpdateProduct,
+  adminDeleteProduct,
   createProduct,
   getProducts,
   getSingleProduct,
   updateProduct,
   deleteProduct,
-  
-  // Admin functions
-  adminGetProducts,
-  adminGetProduct,
-  adminUpdateProduct,
-  adminDeleteProduct
+  // createProductReview,
+  // getProductReviews
+  // deleteReview
 };

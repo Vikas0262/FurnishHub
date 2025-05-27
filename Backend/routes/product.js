@@ -1,7 +1,6 @@
-const express = require('express');
-const multer = require('multer');
-const router = express.Router();
-const { 
+import express from 'express';
+import multer from 'multer';
+import { 
   createProduct, 
   getProducts, 
   getSingleProduct, 
@@ -11,8 +10,10 @@ const {
   adminGetProduct,
   adminUpdateProduct,
   adminDeleteProduct
-} = require('../controllers/productController');
-const { isAuthenticatedUser, authorizeRoles } = require('../middleware/auth');
+} from '../controllers/productController.js';
+import { isAuthenticatedUser, authorizeRoles } from '../middleware/auth.js';
+
+const router = express.Router();
 
 // Configure multer for file upload with memory storage
 const storage = multer.memoryStorage();
@@ -61,4 +62,4 @@ router.route('/product/:id')
   .put(isAuthenticatedUser, upload.single('image'), updateProduct)
   .delete(isAuthenticatedUser, deleteProduct);
 
-module.exports = router;
+export default router;

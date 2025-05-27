@@ -1,6 +1,7 @@
-const express = require('express');
+import express from 'express';
+import Contact from '../models/Contact.js';
+
 const router = express.Router();
-const Contact = require('../models/Contact');
 
 // POST /api/contact - Submit contact form
 router.post('/', async (req, res) => {
@@ -33,4 +34,4 @@ router.post('/', async (req, res) => {
   }
 });
 
-module.exports = router; 
+export default router;
