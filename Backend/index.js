@@ -9,7 +9,16 @@ dotenv.config();
 
 const app = express();
 app.use(cors({
-  origin: ['http://localhost:5173','https://custom-furnish-hub.vercel.app/'], // Your frontend URL
+  origin: function (origin, callback) {
+    callback(null, true); // Allow all origins
+  },
+  credentials: true
+}));
+
+app.options('*', cors({
+  origin: function (origin, callback) {
+    callback(null, true);
+  },
   credentials: true
 }));
 app.use(express.json());
