@@ -4,7 +4,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const ProductDetail = () => {
-  const API_URL = 'http://localhost:5000/api/v1';
+  const API_URL = 'https://furnishhub-production.up.railway.app/api/v1';
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
