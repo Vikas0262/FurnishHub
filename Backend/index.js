@@ -8,18 +8,16 @@ import ErrorHandler from './utils/errorHandler.js';
 dotenv.config();
 
 const app = express();
+const allowedOrigins = ['http://localhost:5173', 'https://custom-furnish-hub.vercel.app'];
+
 app.use(cors({
-  origin: function (origin, callback) {
-    callback(null, true); // Allow all origins
-  },
-  credentials: true
+  origin: allowedOrigins,
+  credentials: true,
 }));
 
 app.options('*', cors({
-  origin: function (origin, callback) {
-    callback(null, true);
-  },
-  credentials: true
+  origin: allowedOrigins,
+  credentials: true,
 }));
 app.use(express.json());
 app.use(cookieParser());
