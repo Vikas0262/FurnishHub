@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://furnishhub-production.up.railway.app/api/v1';
+const API_URL = `${import.meta.env.VITE_BACKEND_URL}api/v1`;
 
 // Create new product
 export const createProduct = async (productData, token) => {
