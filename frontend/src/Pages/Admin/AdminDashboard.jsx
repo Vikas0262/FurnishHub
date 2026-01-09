@@ -227,13 +227,14 @@ const AdminDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden md:ml-56 pt-14 md:pt-0">
-        <div className="flex justify-between items-center p-4 md:p-6 pb-2 md:pb-4">
+      <div className="flex-1 flex flex-col overflow-y-auto md:ml-56 pt-14 md:pt-0">
+        <div className="flex justify-between items-center p-4 md:p-6 pb-2 md:pb-4 sticky top-0 bg-gray-100 z-10">
           <h1 className="text-3xl font-bold text-gray-800">
             {activeTab === 'dashboard' && 'Dashboard'}
             {activeTab === 'products' && 'Products'}
             {activeTab === 'users' && 'Users'}
             {activeTab === 'orders' && 'Orders'}
+            {activeTab === 'analytics' && 'Analytics'}
             {activeTab === 'settings' && 'Settings'}
           </h1>
           {activeTab === 'products' && (
@@ -272,13 +273,13 @@ const AdminDashboard = () => {
         )}
 
         {activeTab === 'products' && (
-          <div className="bg-white rounded-lg shadow overflow-hidden mx-8">
+          <div className="bg-white rounded-lg shadow overflow-hidden mx-8 flex flex-col flex-1">
             {error && (
               <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
                 {error}
               </div>
             )}
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto overflow-y-auto flex-1">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
@@ -370,6 +371,98 @@ const AdminDashboard = () => {
                 </tbody>
               </table>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'users' && (
+          <div className="flex items-center justify-center h-96 mx-8">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-lg shadow-lg p-12 text-center"
+            >
+              <div className="flex justify-center mb-6">
+                <div className="bg-blue-100 rounded-full p-6">
+                  <FaUsers className="text-blue-500" size={48} />
+                </div>
+              </div>
+              <h2 className="text-3xl font-bold text-gray-800 mb-4">Users Management</h2>
+              <p className="text-gray-600 text-lg mb-4">
+                Advanced user management features and analytics coming soon
+              </p>
+              <div className="inline-block bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
+                <span className="font-semibold">🚀 Coming Soon</span>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {activeTab === 'orders' && (
+          <div className="flex items-center justify-center h-96 mx-8">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-lg shadow-lg p-12 text-center"
+            >
+              <div className="flex justify-center mb-6">
+                <div className="bg-purple-100 rounded-full p-6">
+                  <FaShoppingCart className="text-purple-500" size={48} />
+                </div>
+              </div>
+              <h2 className="text-3xl font-bold text-gray-800 mb-4">Orders Management</h2>
+              <p className="text-gray-600 text-lg mb-4">
+                Order tracking, status updates, and fulfillment management coming soon
+              </p>
+              <div className="inline-block bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
+                <span className="font-semibold">🚀 Coming Soon</span>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {activeTab === 'analytics' && (
+          <div className="flex items-center justify-center h-96 mx-8">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-lg shadow-lg p-12 text-center"
+            >
+              <div className="flex justify-center mb-6">
+                <div className="bg-green-100 rounded-full p-6">
+                  <FaChartLine className="text-green-500" size={48} />
+                </div>
+              </div>
+              <h2 className="text-3xl font-bold text-gray-800 mb-4">Analytics & Reports</h2>
+              <p className="text-gray-600 text-lg mb-4">
+                Detailed sales analytics, charts, trends, and comprehensive business reports coming soon
+              </p>
+              <div className="inline-block bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
+                <span className="font-semibold">🚀 Coming Soon</span>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {activeTab === 'settings' && (
+          <div className="flex items-center justify-center h-96 mx-8">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-lg shadow-lg p-12 text-center"
+            >
+              <div className="flex justify-center mb-6">
+                <div className="bg-orange-100 rounded-full p-6">
+                  <FaCog className="text-orange-500" size={48} />
+                </div>
+              </div>
+              <h2 className="text-3xl font-bold text-gray-800 mb-4">Settings & Configuration</h2>
+              <p className="text-gray-600 text-lg mb-4">
+                Admin settings, system configuration, and preferences management coming soon
+              </p>
+              <div className="inline-block bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
+                <span className="font-semibold">🚀 Coming Soon</span>
+              </div>
+            </motion.div>
           </div>
         )}
       </div>
